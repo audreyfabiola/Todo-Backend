@@ -1,27 +1,20 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Response, Request, Cookie
 from sqlalchemy.orm import Session
-
-from . import crud, models, schemas
-from .database import SessionLocal, engine
 from typing import List
-from fastapi.middleware.cors import CORSMiddleware
-
 from pydantic import BaseModel
-from fastapi import HTTPException, FastAPI, Response, Depends
 from uuid import UUID, uuid4
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_sessions.backends.implementations import InMemoryBackend
 from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi_sessions.frontends.implementations import SessionCookie, CookieParameters
 
-from fastapi import Request
+import requests
+
+from . import crud, models, schemas
+from .database import SessionLocal, engine
 from .models import SessionInfo
 
-from fastapi import HTTPException, Response
-from uuid import uuid4
-from fastapi import Cookie
-
-import requests
 
 models.Base.metadata.create_all(bind=engine)
 
