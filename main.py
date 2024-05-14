@@ -195,7 +195,6 @@ verifier = BasicVerifier(
     auth_http_exception=HTTPException(status_code=403, detail="invalid session"),
 )
 
-
 @app.post("/create_session/{email}")
 async def create_session(email: str, response: Response, db: Session = Depends(get_db)):
     try:
@@ -207,17 +206,15 @@ async def create_session(email: str, response: Response, db: Session = Depends(g
         db.add(db_session_info)
         db.commit()
 
-        # Fetch the session info from the database
-        db.refresh(db_session_info)
-
-        return db_session_info.session_id # Return session ID from the database
+        return session_id
     except Exception as e:
         # Handle exceptions
         return {"error": str(e)}
+
     
-# @app.get("/whoami", dependencies=[Depends(cookie)])
-# async def whoami(session_data: SessionData = Depends(verifier)):
-#     return session_data
+@app.get("/whoami", dependencies=[Depends(cookie)])
+async def whoami(session_data: SessionData = Depends(verifier)):
+    return session_data
 
 @app.delete("/delete_session/{session_id}")
 async def del_session(session_id: str, db: Session = Depends(get_db)):
